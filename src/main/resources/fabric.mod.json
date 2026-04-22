@@ -1,37 +1,28 @@
 {
-	"schemaVersion": 1,
-	"id": "modid",
-	"version": "${version}",
-	"name": "Example Mod",
-	"description": "This is an example description! Tell everyone what your mod is about!",
-	"authors": [
-		"Me!"
-	],
-	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
-	},
-	"license": "CC0-1.0",
-	"icon": "assets/modid/icon.png",
-	"environment": "*",
-	"entrypoints": {
-  "client": [
-    "com.example.ExampleMod"
-  ]
-},
-
-	},
-	"mixins": [
-		"modid.mixins.json",
-		{
-			"config": "modid.client.mixins.json",
-			"environment": "client"
-		}
-	],
-	"depends": {
-		"fabricloader": ">=0.19.2",
-		"minecraft": "~26.1.2",
-		"java": ">=25",
-		"fabric-api": "*"
-	}
+  "schemaVersion": 1,
+  "id": "spearswap",
+  "version": "${version}",
+  "name": "Spear Swap",
+  "description": "Quick swap and dash with a spear!",
+  "authors": [
+    "You"
+  ],
+  "contact": {
+    "homepage": "https://fabricmc.net",
+    "sources": "https://github.com"
+  },
+  "license": "CC0-1.0",
+  "icon": "assets/spearswap/icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "com.example.ExampleMod"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.15.0",
+    "minecraft": "~1.21.1",
+    "java": ">=21",
+    "fabric-api": "*"
+  }
 }
