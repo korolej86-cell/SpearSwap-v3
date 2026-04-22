@@ -14,37 +14,47 @@ public class ExampleMod implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        // Регистрируем кнопку Q
+        // Регистрация кнопки Q
         keyBinding = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-            "key.spearswap.dash", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_Q, "category.spearswap"));
+            "key.spearswap.dash", 
+            InputUtil.Type.KEYSYM, 
+            GLFW.GLFW_KEY_Q, 
+            "category.spearswap"
+        ));
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            while (keyBinding.wasPressed() && client.player != null) {
-                int oldSlot = client.player.getInventory().selectedSlot;
-                int spearSlot = -1;
-
-                // Ищем копьё (трезубец)
-                for (int i = 0; i < 9; i++) {
-                    if (client.player.getInventory().getStack(i).isOf(Items.TRIDENT)) {
-                        spearSlot = i;
-                        break;
-                    }
-                }
-
-                if (spearSlot != -1) {
-                    // Свап и рывок
-                    client.player.getInventory().selectedSlot = spearSlot;
-                    Vec3d look = client.player.getRotationVec(1.0F);
-                    client.player.setVelocity(look.x * 1.5, 0.2, look.z * 1.5);
-                    
-                    // Возврат через 10 тиков (логика клиента)
-                    final int finalOldSlot = oldSlot;
-                    new Thread(() -> {
-                        try { Thread.sleep(400); } catch (InterruptedException e) {}
-                        client.execute(() -> client.player.getInventory().selectedSlot = finalOldSlot);
-                    }).start();
+            if (client.player != null) {
+                while (keyBinding.wasPressed()) {
+                    executeTechnique(client);
                 }
             }
         });
+    }
+
+    private void executeTechnique(net.minecraft.client.MinecraftClient client) {
+        var inv = client.player.getInventory();
+        int oldSlot = inv.selectedSlot;
+        int spearSlot = -1;
+
+        // Поиск трезубца
+        for (int i = 0; i < 9; i++) {
+            if (inv.getStack(i).isOf(Items.TRIDENT)) {
+                spearSlot = i;
+                break;
+            }
+        }
+
+        if (spearSlot != -1) {
+            inv.selectedSlot = spearSlot;
+            Vec3d look = client.player.getRotationVec(1.0F);
+            client.player.setVelocity(look.x * 1.5, 0.2, look.z * 1.5);
+            
+            // Возврат слота через поток (простой способ для клиента)
+            final int targetSlot = oldSlot;
+            new Thread(() -> {
+                try { Thread.sleep(400); } catch (Exception ignored) {}
+                client.execute(() -> inv.selectedSlot = targetSlot);
+            }).start();
+        }
     }
 }
